@@ -211,15 +211,23 @@ async def upload_pdf(
             "message": "PDF accepted and processing started in background"
         })
 
+    except HTTPException:
+        raise
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.exception("Upload failed")
+
+        raise HTTPException(
+            status_code=500,
+            detail="Internal Server Error"
+        )
+
     finally:
         if os.path.exists(temp_path):
             try:
                 os.remove(temp_path)
             except Exception:
                 pass
-
 
 # ── BULK UPLOAD ──
 @router.post("/bulk-upload")
@@ -314,11 +322,20 @@ async def bulk_upload(
                 "pages": total_pages
             })
 
-        except Exception as e:
+        except HTTPException as e:
             results.append({
                 "file": file.filename,
                 "status": "failed",
-                "reason": str(e)
+                "reason": e.detail
+            })
+
+        except Exception as e:
+            logger.exception("Bulk upload failed")
+
+            results.append({
+                "file": file.filename,
+                "status": "failed",
+                "reason": "Internal Server Error"
             })
         finally:
             if os.path.exists(temp_path):

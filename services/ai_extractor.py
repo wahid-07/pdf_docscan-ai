@@ -50,6 +50,14 @@ def extract_page_content(image: Image.Image, page_num: int) -> dict:
         image.save(buffer, format="PNG")
         image_bytes = buffer.getvalue()
         image_b64 = base64.b64encode(image_bytes).decode()
+        # yaha se change kiye hain
+        print("=" * 80)
+        print("Sending request to Gemini...")
+        print(f"Page Number: {page_num}")
+        print(f"Image Size: {image.size}")
+        print(f"Image Bytes: {len(image_bytes)}")
+        print("=" * 80)
+        # yaha tak
 
         response = client.models.generate_content(
             model="gemini-flash-lite-latest",
@@ -81,8 +89,27 @@ def extract_page_content(image: Image.Image, page_num: int) -> dict:
         result["page_number"] = page_num
         return result
 
+    # except Exception as e:
+    #     # Error pe bhi kuch return karo
+    #     return {
+    #         "content_type": "error",
+    #         "text": f"Page {page_num} extract nahi ho saka: {str(e)}",
+    #         "tables": [],
+    #         "images": [],
+    #         "page_number": page_num
+    #     }
+
     except Exception as e:
-        # Error pe bhi kuch return karo
+        import traceback
+
+        print("\n" + "=" * 80)
+        print("GEMINI ERROR")
+        print(f"Error Type : {type(e).__name__}")
+        print(f"Error      : {str(e)}")
+        print("\nFull Traceback:")
+        traceback.print_exc()
+        print("=" * 80 + "\n")
+
         return {
             "content_type": "error",
             "text": f"Page {page_num} extract nahi ho saka: {str(e)}",

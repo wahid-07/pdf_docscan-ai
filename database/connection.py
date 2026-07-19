@@ -16,8 +16,11 @@ if DATABASE_URL and DATABASE_URL.startswith("sqlite:///"):
     db_path.parent.mkdir(parents=True, exist_ok=True)
 
 # Engine banao — ye actual DB connection hai
-engine = create_engine(DATABASE_URL)
-
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=300,
+)
 # Session factory — har DB operation ke liye use hoga
 SessionLocal = sessionmaker(bind=engine)
 
