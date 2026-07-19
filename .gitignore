@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+.venv/
+venv/
+
+# Environment Variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Python cache
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite3
+
+# Uploaded PDFs
+uploads/*
+!uploads/.gitkeep
+
+# Rejected PDFs
+rejected_uploads/*
+!rejected_uploads/.gitkeep
+
+# OS Files
+Thumbs.db
+.DS_Store
