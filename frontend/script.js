@@ -717,12 +717,7 @@ async function doExtract() {
       pollUploadStatus(data.pdf_id);
     }
 
-    const html = buildResultsHTML(data);
-    document.getElementById('inlineResults').innerHTML = html;
-    document.getElementById('inlineResults').classList.add('show');
-    document.getElementById('resultsContent').innerHTML = html;
     document.getElementById('nc-results').textContent = data.total_pages || 0;
-    document.getElementById('nc-records').textContent = allRecords.length;
 
     showAlert('uploadAlert','ok',`✓ ${data.file || currentFile.name} accepted for background processing.`);
     loadDashboard();
@@ -1236,6 +1231,37 @@ async function pollUploadStatus(pdfId) {
     const data = await safeJson(res);
     if (!res.ok) throw new Error(data.detail || 'Status unavailable');
     updateStatusUI(data);
+
+    if (data.status === 'completed') {
+
+      clearTimeout(activeUploadStatusTimer);
+
+      await loadAllRecords();
+
+      const pageResults = allRecords
+        .filter(r => r.pdfId === pdfId)
+        .map(r => ({
+          page_number: r.page,
+          content_type: r.type,
+          tables: r.tables,
+          text: r.text,
+          images: r.images
+        }));
+
+      const html = buildResultsHTML({
+        results: pageResults,
+        pdf_id: pdfId,
+        file: currentFile ? currentFile.name : ''
+      });
+
+      document.getElementById('inlineResults').innerHTML = html;
+      document.getElementById('inlineResults').classList.add('show');
+      document.getElementById('resultsContent').innerHTML = html;
+
+      loadDashboard();
+      return;
+    }
+
     if (data.status !== 'completed' && data.status !== 'failed') {
       clearTimeout(activeUploadStatusTimer);
       activeUploadStatusTimer = setTimeout(() => pollUploadStatus(pdfId), 2000);
