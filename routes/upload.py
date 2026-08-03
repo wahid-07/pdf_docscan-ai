@@ -62,8 +62,12 @@ def _is_valid_pdf_file(path: str) -> bool:
     try:
         with open(path, "rb") as handle:
             header = handle.read(8)
+
+        logger.error("PDF Header = %s", header)
         return header.startswith(b"%PDF")
-    except Exception:
+
+    except Exception as e:
+        logger.exception("Error inside _is_valid_pdf_file()")
         return False
 
 
@@ -138,6 +142,12 @@ async def upload_pdf(
 
     try:
         validation = validate_pdf(temp_path)
+        logger.error("Temp path = %s", temp_path)
+        logger.error("File exists = %s", os.path.exists(temp_path))
+        logger.error(
+            "File size = %s",
+            os.path.getsize(temp_path) if os.path.exists(temp_path) else "Missing"
+        )
         is_valid_file = _is_valid_pdf_file(temp_path)
 
         logger.error("========== PDF VALIDATION DEBUG ==========")
@@ -264,6 +274,12 @@ async def bulk_upload(
 
         try:
             validation = validate_pdf(temp_path)
+            logger.error("Temp path = %s", temp_path)
+            logger.error("File exists = %s", os.path.exists(temp_path))
+            logger.error(
+                "File size = %s",
+                os.path.getsize(temp_path) if os.path.exists(temp_path) else "Missing"
+            )
             is_valid_file = _is_valid_pdf_file(temp_path)
 
             logger.error("========== BULK PDF VALIDATION DEBUG ==========")
