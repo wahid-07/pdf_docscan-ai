@@ -61,10 +61,12 @@ def _get_ai_concurrency() -> int:
 def _is_valid_pdf_file(path: str) -> bool:
     try:
         with open(path, "rb") as handle:
-            header = handle.read(8)
+            header = handle.read(1024)
 
-        logger.error("PDF Header = %s", header)
-        return header.startswith(b"%PDF")
+        logger.error("PDF Header = %s", header[:20])    
+
+        return b"%PDF" in header
+        
 
     except Exception as e:
         logger.exception("Error inside _is_valid_pdf_file()")
