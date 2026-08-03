@@ -89,15 +89,6 @@ def extract_page_content(image: Image.Image, page_num: int) -> dict:
         result["page_number"] = page_num
         return result
 
-    # except Exception as e:
-    #     # Error pe bhi kuch return karo
-    #     return {
-    #         "content_type": "error",
-    #         "text": f"Page {page_num} extract nahi ho saka: {str(e)}",
-    #         "tables": [],
-    #         "images": [],
-    #         "page_number": page_num
-    #     }
 
     except Exception as e:
         import traceback

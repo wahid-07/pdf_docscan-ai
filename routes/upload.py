@@ -138,14 +138,27 @@ async def upload_pdf(
 
     try:
         validation = validate_pdf(temp_path)
+        is_valid_file = _is_valid_pdf_file(temp_path)
 
-        if not validation["valid"] or not _is_valid_pdf_file(temp_path):
+        logger.error("========== PDF VALIDATION DEBUG ==========")
+        logger.error("validation = %s", validation)
+        logger.error("_is_valid_pdf_file = %s", is_valid_file)
+        logger.error("==========================================")
+
+        if not validation["valid"] or not is_valid_file:
             logger.warning("Upload rejected for %s: %s", file.filename, validation.get("reason"))
 
             reject_folder = os.path.join("uploads", "rejected", validation["folder"])
             os.makedirs(reject_folder, exist_ok=True)
             reject_path = os.path.join(reject_folder, file.filename)
             shutil.move(temp_path, reject_path)
+
+            logger.error("========== REJECTED PDF ==========")
+            logger.error("Reason = %s", validation.get("reason"))
+            logger.error("Folder = %s", validation.get("folder"))
+            logger.error("Reject Path = %s", reject_path)
+            logger.error("==================================")
+
 
             create_rejected_upload(
                 file_name=file.filename,
@@ -251,12 +264,27 @@ async def bulk_upload(
 
         try:
             validation = validate_pdf(temp_path)
+            is_valid_file = _is_valid_pdf_file(temp_path)
 
-            if not validation["valid"] or not _is_valid_pdf_file(temp_path):
+            logger.error("========== BULK PDF VALIDATION DEBUG ==========")
+            logger.error("File = %s", file.filename)
+            logger.error("validation = %s", validation)
+            logger.error("_is_valid_pdf_file = %s", is_valid_file)
+            logger.error("==============================================")
+
+
+            if not validation["valid"] or not is_valid_file:
                 reject_folder = os.path.join("uploads", "rejected", validation["folder"])
                 os.makedirs(reject_folder, exist_ok=True)
                 reject_path = os.path.join(reject_folder, file.filename)
                 shutil.move(temp_path, reject_path)
+
+                logger.error("========== BULK REJECTED PDF ==========")
+                logger.error("File = %s", file.filename)
+                logger.error("Reason = %s", validation.get("reason"))
+                logger.error("Folder = %s", validation.get("folder"))
+                logger.error("Reject Path = %s", reject_path)
+                logger.error("======================================")
 
                 create_rejected_upload(
                     file_name=file.filename,
