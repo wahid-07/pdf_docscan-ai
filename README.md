@@ -347,33 +347,10 @@ pip install -r requirements.txt
 
 ---
 
-# 🔐 Environment Variables
-
-Create a `.env` file in the project root.
-
-Example:
-
-```env
-DATABASE_URL=postgresql://username:password@host:5432/database_name
-
-GEMINI_API_KEY=your_gemini_api_key
-
-SECRET_KEY=your_secret_key
-```
-
-> Never commit `.env` or API keys to GitHub.
-
-Make sure `.env` is included in `.gitignore`.
-
----
 
 # 🗃️ PostgreSQL Setup
 
 Create a PostgreSQL database and configure the connection using:
-
-```env
-DATABASE_URL=your_postgresql_connection_string
-```
 
 The application uses SQLAlchemy to communicate with PostgreSQL.
 
@@ -476,40 +453,6 @@ The application includes several security-related features:
 - File size restrictions
 
 API keys and database credentials should never be hard-coded in the source code.
-
----
-
-# ⚠️ Current Limitations
-
-Because the application uses AI-based page processing and cloud resources, processing time can increase for:
-
-- Very large PDFs
-- PDFs with many pages
-- Image-heavy documents
-- Multiple simultaneous uploads
-
-Cloud deployment resources may also affect processing performance.
-
----
-
-# 🚀 Future Improvements
-
-Planned improvements include:
-
-- [ ] Advanced background job queue
-- [ ] Improved live processing progress
-- [ ] Large PDF optimization
-- [ ] OCR fallback
-- [ ] AI document summarization
-- [ ] Chat with uploaded PDF
-- [ ] Advanced dashboard analytics
-- [ ] CSV export
-- [ ] JSON export
-- [ ] Improved pagination
-- [ ] Better extraction accuracy
-- [ ] Cloud object storage for uploaded PDFs
-- [ ] Scalable worker architecture
-- [ ] Improved monitoring and observability
 
 ---
 
